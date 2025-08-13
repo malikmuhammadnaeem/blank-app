@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Pong Game</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Main Menu -->
+        <div id="mainMenu" class="menu-screen">
+            <div class="menu-content">
+                <h1 class="game-title">PROFESSIONAL PONG</h1>
+                <div class="menu-buttons">
+                    <button class="menu-btn" onclick="showGameModeMenu()">PLAY GAME</button>
+                    <button class="menu-btn" onclick="showInstructions()">INSTRUCTIONS</button>
+                    <button class="menu-btn" onclick="showSettings()">SETTINGS</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Mode Selection -->
+        <div id="gameModeMenu" class="menu-screen hidden">
+            <div class="menu-content">
+                <h2 class="menu-title">SELECT GAME MODE</h2>
+                <div class="menu-buttons">
+                    <button class="menu-btn" onclick="selectGameMode('single')">VS COMPUTER</button>
+                    <button class="menu-btn" onclick="selectGameMode('two-player')">TWO PLAYERS</button>
+                    <button class="menu-btn back-btn" onclick="showMainMenu()">BACK</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Difficulty Selection -->
+        <div id="difficultyMenu" class="menu-screen hidden">
+            <div class="menu-content">
+                <h2 class="menu-title">SELECT DIFFICULTY</h2>
+                <div class="menu-buttons">
+                    <button class="menu-btn difficulty-btn" data-difficulty="easy">EASY</button>
+                    <button class="menu-btn difficulty-btn" data-difficulty="medium">MEDIUM</button>
+                    <button class="menu-btn difficulty-btn" data-difficulty="hard">HARD</button>
+                    <button class="menu-btn back-btn" onclick="showGameModeMenu()">BACK</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructions Screen -->
+        <div id="instructionsMenu" class="menu-screen hidden">
+            <div class="menu-content">
+                <h2 class="menu-title">INSTRUCTIONS</h2>
+                <div class="instructions-text">
+                    <div class="instruction-section">
+                        <h3>SINGLE PLAYER MODE</h3>
+                        <p>• Move your mouse up and down to control the left paddle</p>
+                        <p>• Defeat the AI opponent by reaching 11 points first</p>
+                        <p>• Choose from 3 difficulty levels: Easy, Medium, Hard</p>
+                    </div>
+                    <div class="instruction-section">
+                        <h3>TWO PLAYER MODE</h3>
+                        <p>• Player 1: Move mouse up and down (left paddle)</p>
+                        <p>• Player 2: Use W and S keys (right paddle)</p>
+                        <p>• First player to reach 11 points wins</p>
+                    </div>
+                    <div class="instruction-section">
+                        <h3>CONTROLS</h3>
+                        <p>• ESC: Pause/Resume game</p>
+                        <p>• ENTER: Start game after win/lose</p>
+                    </div>
+                </div>
+                <button class="menu-btn back-btn" onclick="showMainMenu()">BACK</button>
+            </div>
+        </div>
+
+        <!-- Settings Screen -->
+        <div id="settingsMenu" class="menu-screen hidden">
+            <div class="menu-content">
+                <h2 class="menu-title">SETTINGS</h2>
+                <div class="settings-options">
+                    <div class="setting-item">
+                        <label>Sound Effects:</label>
+                        <button id="soundToggle" class="toggle-btn" onclick="toggleSound()">ON</button>
+                    </div>
+                    <div class="setting-item">
+                        <label>Ball Speed:</label>
+                        <select id="ballSpeedSelect" onchange="changeBallSpeed()">
+                            <option value="normal">Normal</option>
+                            <option value="fast">Fast</option>
+                            <option value="very-fast">Very Fast</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label>Paddle Size:</label>
+                        <select id="paddleSizeSelect" onchange="changePaddleSize()">
+                            <option value="small">Small</option>
+                            <option value="normal">Normal</option>
+                            <option value="large">Large</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="menu-btn back-btn" onclick="showMainMenu()">BACK</button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="hidden">
+            <div class="game-ui">
+                <div class="score-display">
+                    <div class="player-score">
+                        <span class="player-name" id="player1Name">PLAYER 1</span>
+                        <span class="score" id="player1Score">0</span>
+                    </div>
+                    <div class="game-info">
+                        <span id="gameMode">VS COMPUTER</span>
+                        <span id="difficultyDisplay">MEDIUM</span>
+                    </div>
+                    <div class="player-score">
+                        <span class="player-name" id="player2Name">COMPUTER</span>
+                        <span class="score" id="player2Score">0</span>
+                    </div>
+                </div>
+            </div>
+            <canvas id="gameCanvas" width="800" height="400"></canvas>
+            <div class="game-controls">
+                <button class="control-btn" onclick="pauseGame()">PAUSE</button>
+                <button class="control-btn" onclick="endGame()">QUIT</button>
+            </div>
+        </div>
+
+        <!-- Pause Screen -->
+        <div id="pauseScreen" class="overlay-screen hidden">
+            <div class="overlay-content">
+                <h2 class="overlay-title">GAME PAUSED</h2>
+                <div class="overlay-buttons">
+                    <button class="menu-btn" onclick="resumeGame()">RESUME</button>
+                    <button class="menu-btn" onclick="endGame()">QUIT</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="gameOverScreen" class="overlay-screen hidden">
+            <div class="overlay-content">
+                <h2 class="overlay-title" id="gameOverTitle">GAME OVER</h2>
+                <div class="overlay-text" id="gameOverText"></div>
+                <div class="overlay-buttons">
+                    <button class="menu-btn" onclick="restartGame()">PLAY AGAIN</button>
+                    <button class="menu-btn" onclick="showMainMenu()">MAIN MENU</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
